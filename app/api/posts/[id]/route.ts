@@ -31,3 +31,23 @@ export async function DELETE(
 
   return NextResponse.json({ message: "Deleted" }, { status: 204 });
 }
+
+export async function PUT(
+  req: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const { title, content } = await req.json();
+
+  const updated = await db
+    .update(posts)
+    .set({ title, content })
+    .where(eq(posts.id, Number(id)))
+    .returning();
+
+  if (updated.length === 0) {
+    return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  }
+
+  return NextResponse.json(updated[0]);
+}
