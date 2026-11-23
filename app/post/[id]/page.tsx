@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
-export default function PostDetail() {
+function PostDetailContent() {
   const { id } = useParams();
   const router = useRouter();
   const [post, setPost] = useState<unknown>(null);
@@ -18,6 +18,7 @@ export default function PostDetail() {
   const handleDelete = async () => {
     await fetch(`/api/posts/${id}`, { method: "DELETE" });
     router.push("/");
+    router.refresh();
   };
 
   if (!post) return <p className="container mt-4">Loading...</p>;
@@ -35,5 +36,13 @@ export default function PostDetail() {
         Delete
       </button>
     </main>
+  );
+}
+
+export default function PostDetail() {
+  return (
+    <Suspense fallback={<p className="container mt-4">Loading...</p>}>
+      <PostDetailContent />
+    </Suspense>
   );
 }
