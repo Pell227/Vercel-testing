@@ -3,8 +3,6 @@ import { db } from "@/db";
 import { posts } from "@/db/schema"; // Sesuaikan nama tabel jika di schema.ts bukan "posts"
 import { desc } from "drizzle-orm";
 
-export const dynamic = "force-dynamic";
-
 export default async function Home() {
   const allPosts = await db.select().from(posts).orderBy(desc(posts.createdAt));
 
